@@ -10,10 +10,10 @@
     </form>
 </div>
 <#list messages as message>
-<div>
-    ${message.text}
-    ${message.tag}
-    ${message.author.username}
+<div class="row">
+    <div class="col">${message.text}</div>
+    <div class="col">${message.tag}</div>
+    <div class="col">${message.author.username}</div>
 </div>
 <#else>
 No messages
