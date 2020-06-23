@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
-public class Message {
+public class    Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,6 +19,8 @@ public class Message {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
+
+    private String filename;
 
     public Message(String text, String tag, User user){
         this.author = user;
