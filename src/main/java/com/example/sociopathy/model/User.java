@@ -23,8 +23,8 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    /*@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Message> message;*/
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Message> message;
 
     public User(String username, String password) {
         this.username = username;

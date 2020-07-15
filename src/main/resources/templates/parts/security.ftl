@@ -9,6 +9,6 @@
     >
 <#else>
     <#assign
-        name = ""
+        name = "Guest"
 >
 </#if>
