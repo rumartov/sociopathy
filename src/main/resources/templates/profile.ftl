@@ -13,7 +13,7 @@
             </#if>
         </a>
         <div class="m-2">
-        <a href="main/post/${message.postId}">
+        <a href="/main/post/${message.postId}">
             <span>${message.title}</span>
         </a>
             <i>${message.tag}</i>
