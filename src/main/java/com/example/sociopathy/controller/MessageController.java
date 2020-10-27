@@ -5,6 +5,10 @@ import com.example.sociopathy.model.User;
 import com.example.sociopathy.repo.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,15 +33,24 @@ public class MessageController {
     private String uploadPath;
 
     @GetMapping("/main")
-    public String getMessages(@RequestParam(required = false, defaultValue = "") String filter, Model model){
-        Iterable<Message> messages = messageRepo.findAll();
+    public String getMessages(@RequestParam(required = false, defaultValue = "") String filter,
+                              Model model,
+                              @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable){
+        Page<Message> page;
+
         if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
+            page = messageRepo.findByTag(filter, pageable);
         } else {
-            messages = messageRepo.findAll();
+            page = messageRepo.findAll(pageable);
         }
 
-        model.addAttribute("messages", messages);
+       /* if(page.getContent() == null){
+            page = Page.empty(pageable);
+        }*/
+
+        model.addAttribute("page", page);
+        model.addAttribute("url", "/main");
+        model.addAttribute("filter", filter);
 
         return "main";
     }
@@ -47,7 +61,8 @@ public class MessageController {
                       @RequestParam String text,
                       @RequestParam String tag,
                       @RequestParam("file") MultipartFile file,
-                      Map<String, Object> model)
+                      Model model,
+                      @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable)
             throws IOException {
         String postId = UUID.randomUUID().toString();
         Message message = new Message(title, text, tag, user, postId);
@@ -69,9 +84,11 @@ public class MessageController {
 
         messageRepo.save(message);
 
-        Iterable<Message> messages = messageRepo.findAll();
+        Page<Message> page;
+        page = messageRepo.findAll(pageable);
 
-        model.put("messages", messages);
+        model.addAttribute("page", page);
+        model.addAttribute("url", "/main");
 
         return "main";
     }
